@@ -1,0 +1,256 @@
+services:
+  # Сервис БД для локального окружения
+  postgres_local:
+    hostname: postgres_local
+    image: postgres:15-alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_postgres_local
+    env_file:
+      - .env.local
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - "5434:5432" # кастомный порт для локал
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=50"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "effective_cache_size=4GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=10GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=10s"
+      - "-c"
+      - "lock_timeout=1s"
+      - "-c"
+      - "statement_timeout=60s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+      - "-c"
+      - "search_path=seatbook,public"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    volumes:
+      - postgres_local_data:/var/lib/postgresql/data
+      - ./db/init_scripts:/docker-entrypoint-initdb.d
+    networks:
+      - seatbook_bot_local_network
+    profiles: ["local"]
+
+  # Сервис Бота для локального окружения
+  bot_local:
+    image: seatbook_bot_local
+    build: .
+    container_name: ${COMPOSE_PROJECT_NAME}_local
+    volumes:
+      - /var/log/seatbook-bot-local:/app/logs
+    env_file:
+      - .env.local
+    environment:
+      - APP_ENV=${APP_ENV}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    depends_on:
+      - postgres_local
+    networks:
+      - seatbook_bot_local_network
+    profiles: ["local"]
+    restart: no
+
+  # Сервис БД для ТЕСТОВОГО окружения
+  postgres_dev:
+    hostname: postgres_dev
+    image: postgres:15-alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_postgres_dev
+    env_file:
+      - .env.dev
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - "5432:5432"
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=50"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "effective_cache_size=4GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=10GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=10s"
+      - "-c"
+      - "lock_timeout=1s"
+      - "-c"
+      - "statement_timeout=60s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+      - "-c"
+      - "search_path=seatbook,public"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./db/init_scripts:/docker-entrypoint-initdb.d
+    networks:
+      - seatbook_bot_dev_network
+    profiles: ["dev"]
+
+  # Сервис Бота для ТЕСТОВОГО окружения
+  bot_dev:
+    image: seatbook_bot_dev
+    build: .
+    container_name: ${COMPOSE_PROJECT_NAME}_dev
+    volumes:
+      - /var/log/seatbook-bot-dev:/app/logs
+    env_file:
+      - .env.dev
+    environment:
+      - APP_ENV=${APP_ENV}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    depends_on:
+      - postgres_dev
+    networks:
+      - seatbook_bot_dev_network
+    profiles: ["dev"]
+    restart: no
+
+  # Сервис БД для ПРОДАКШЕН окружения
+  postgres_prod:
+    hostname: postgres_prod
+    image: postgres:15-alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_postgres_prod
+    env_file:
+      - .env.prod
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - "5433:5432" # для прода кастомный порт, для дева стандартный
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=50"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "effective_cache_size=4GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=10GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=10s"
+      - "-c"
+      - "lock_timeout=1s"
+      - "-c"
+      - "statement_timeout=60s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+      - "-c"
+      - "search_path=seatbook,public"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+      - ./db/init_scripts:/docker-entrypoint-initdb.d
+    networks:
+      - seatbook_bot_prod_network
+    profiles: ["prod"]
+
+  # Сервис Бота для ПРОДАКШЕН окружения
+  bot_prod:
+    image: seatbook_bot_prod
+    build: .
+    container_name: ${COMPOSE_PROJECT_NAME}_prod
+    volumes:
+      - /var/log/seatbook-bot-prod:/app/logs
+    env_file:
+      - .env.prod
+    environment:
+      - APP_ENV=${APP_ENV}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    depends_on:
+      - postgres_prod
+    networks:
+      - seatbook_bot_prod_network
+    profiles: ["prod"]
+    restart: always # Более строгий режим перезапуска для прода
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  postgres_prod_data:
+    driver: local
+  postgres_local_data:
+    driver: local
+
+networks:
+  seatbook_bot_dev_network:
+    driver: bridge
+  seatbook_bot_prod_network:
+    driver: bridge
+  seatbook_bot_local_network:
+    driver: bridge
