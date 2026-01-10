@@ -7,3 +7,4 @@ pyproject.toml
 __pycache__/
 .venv
 .DS_Store
+.github
