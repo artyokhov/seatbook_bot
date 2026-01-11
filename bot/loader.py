@@ -1,4 +1,3 @@
-# bot/loader.py
 from telebot.async_telebot import AsyncTeleBot
 from telebot.asyncio_storage import StateMemoryStorage
 
