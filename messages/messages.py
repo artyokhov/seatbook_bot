@@ -233,3 +233,7 @@ future_bookings_list_item = formatting.format_text(
 )
 
 no_future_booking_text = "Никто не планирует посещать офис в ближайшие 14 дней. 💭"
+
+outdated_message_text = formatting.format_text(
+    formatting.hitalic("⏳ Это сообщение устарело. Актуальное ниже 👇"), separator=""
+)

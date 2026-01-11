@@ -28,7 +28,7 @@ async def preload_images():
     msg = await BOT.send_photo(
         settings.ADMIN_CHAT_ID,
         photo=open(office_map_path, "rb"),
-        caption="Карта мест загружена и бот запущен.",
+        caption="Карта мест загружена.",
     )
 
     # Берем file_id самого большого размера фото

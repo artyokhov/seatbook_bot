@@ -86,7 +86,7 @@ def date_selection_markup(available_dates: list[dict]) -> InlineKeyboardMarkup:
         button = {"callback_data": f"seats_on: {date['timestamp']}"}
         buttons[date_name] = button
 
-    keyboard = util.quick_markup(buttons, row_width=3)
+    keyboard = util.quick_markup(buttons, row_width=2)
     keyboard.row(InlineKeyboardButton("⬅️ В начало", callback_data="to_start"))
 
     return keyboard
@@ -102,7 +102,7 @@ def see_colleagues_bookings_choose_date_markup(
         button = {"callback_data": f"see_colleagues_on: {date['timestamp']}"}
         buttons[date_name] = button
 
-    keyboard = util.quick_markup(buttons, row_width=3)
+    keyboard = util.quick_markup(buttons, row_width=2)
     keyboard.row(InlineKeyboardButton("⬅️ В начало", callback_data="to_start"))
 
     return keyboard
@@ -153,8 +153,6 @@ def seat_selection_markup(
         button = {"callback_data": f"book_date_seat: {book_date}|{seat}"}
         buttons[seat] = button
 
-    # buttons["⏪ В начало"] = {"callback_data": "to_start"}
-
     keyboard = util.quick_markup(buttons, row_width=3)
     keyboard.row(InlineKeyboardButton("⬅️ В начало", callback_data="to_start"))
 
@@ -164,6 +162,18 @@ def seat_selection_markup(
 succesfull_booking_markup = util.quick_markup(
     {
         "🪑 Создать еще": {"callback_data": "make_booking_choose_date"},
+        "⚙️ Управлять моими бронированиями": {"callback_data": "manage_my_bookings"},
+        "👀 Узнать кто идёт в офис": {
+            "callback_data": "see_colleagues_bookings_choose_date"
+        },
+        "⏪ В начало": {"callback_data": "to_start"},
+    },
+    row_width=1,
+)
+
+succesfull_guest_booking_markup = util.quick_markup(
+    {
+        "🪑 Создать еще": {"callback_data": "make_guest_choose_date"},
         "⚙️ Управлять моими бронированиями": {"callback_data": "manage_my_bookings"},
         "👀 Узнать кто идёт в офис": {
             "callback_data": "see_colleagues_bookings_choose_date"
@@ -191,7 +201,7 @@ def delete_booking_by_id_markup(bookings_id_list=list[int]) -> InlineKeyboardMar
         buttons[booking_id] = button
 
     keyboard = util.quick_markup(buttons, row_width=3)
-    keyboard.row(InlineKeyboardButton("⬅️ В начало", callback_data="to_start"))
+    keyboard.row(InlineKeyboardButton("↩️ Назад", callback_data="manage_my_bookings"))
 
     return keyboard
 
