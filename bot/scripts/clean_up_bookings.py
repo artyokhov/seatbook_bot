@@ -1,7 +1,12 @@
 import asyncio
+import logging
 
-from bot.dependencies import logger
+from config.logging_config import setup_logging
 from services.booking_service import BookingService
+
+setup_logging()
+
+logger = logging.getLogger("seatbook")
 
 
 async def main():

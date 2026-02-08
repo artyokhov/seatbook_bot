@@ -42,6 +42,7 @@ def setup_logging():
         interval=1,
         backupCount=30,  # хранить 30 дней
         encoding="utf-8",
+        delay=True,
     )
     events_handler.setLevel(logging.INFO)
     events_handler.addFilter(OnlyInfoFilter())
@@ -54,6 +55,7 @@ def setup_logging():
         interval=1,
         backupCount=30,  # хранить 30 дней
         encoding="utf-8",
+        delay=True,
     )
     errors_handler.setLevel(logging.ERROR)
     errors_handler.setFormatter(formatter)
