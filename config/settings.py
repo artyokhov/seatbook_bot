@@ -35,7 +35,7 @@ class Settings:
     )
     # список юзернеймов которым доступна панель администратора
     ADMIN_USERNAMES_LIST = [
-        u.strip().lower().lstrip("@")
+        u.strip().lstrip("@")
         for u in os.getenv("ADMIN_USERNAMES", "").split(",")
         if u.strip()
     ]
