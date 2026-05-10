@@ -170,18 +170,16 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
-    ports:
-      - "5433:5432" # для прода кастомный порт, для дева стандартный
-    command:
+    command: # порты (ports:) не указаны намеренно для ПРОД, т.к. даже при настройке UFW докер делает их торчащими наружу вне зависимости от источника запроса
       - "postgres"
       - "-c"
       - "max_connections=50"
       - "-c"
-      - "shared_buffers=1GB"
+      - "shared_buffers=256MB"
       - "-c"
-      - "effective_cache_size=4GB"
+      - "effective_cache_size=512MB"
       - "-c"
-      - "work_mem=16MB"
+      - "work_mem=4MB"
       - "-c"
       - "maintenance_work_mem=512MB"
       - "-c"
