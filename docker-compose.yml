@@ -24,7 +24,7 @@ services:
       - "work_mem=16MB"
       - "-c"
       - "maintenance_work_mem=512MB"
-      - "-c"
+      - "-c" 
       - "random_page_cost=1.1"
       - "-c"
       - "temp_file_limit=10GB"
@@ -213,6 +213,7 @@ services:
     networks:
       - seatbook_bot_prod_network
     profiles: ["prod"]
+    restart: always # Более строгий режим перезапуска для прода
 
   # Сервис Бота для ПРОДАКШЕН окружения
   bot_prod:
